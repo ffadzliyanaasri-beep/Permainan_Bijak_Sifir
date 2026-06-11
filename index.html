@@ -7,23 +7,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== FULL SCREEN BACKGROUND ===== */
+#fullscreen-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('main background.jpg');
+  transition: background-image 0.6s ease;
+}
+#fullscreen-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
 body {
   font-family: 'Nunito', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 10px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
 }
+
 #app {
-  border-radius: 24px; width: 580px; min-height: 580px;
-  box-shadow: 0 25px 60px rgba(0,0,0,.35); overflow: hidden;
-  position: relative; background: white;
+  border-radius: 24px;
+  width: 580px;
+  min-height: 580px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.5);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  /* App panel: semi-transparent frosted glass */
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.6);
 }
-#app-bg {
-  position: absolute; inset: 0; z-index: 0;
-  background-size: cover; background-position: center; border-radius: 24px;
-}
-#app-bg::after {
-  content:''; position:absolute; inset:0; background:rgba(255,255,255,0.87); border-radius:24px;
-}
+
+/* Remove old app-bg since we use fullscreen now */
+#app-bg { display: none !important; }
+
 #app-inner { position: relative; z-index: 1; }
 .screen { display:none; animation: fadeUp .25s ease; }
 .screen.active { display:block; }
@@ -109,6 +141,10 @@ hr{border:none;border-top:1px solid #E5E7EB;margin:10px 0}
 </style>
 </head>
 <body>
+
+<!-- FULL SCREEN BACKGROUND -->
+<div id="fullscreen-bg"></div>
+
 <div id="app">
   <div id="app-bg"></div>
   <div id="app-inner">
@@ -253,7 +289,11 @@ const sfxWrong=new Audio(FILES.wrong);
 function playMusic(){if(!G.exam){music.currentTime=0;music.play().catch(()=>{});}}
 function stopMusic(){music.pause();music.currentTime=0;}
 function playSfx(s){if(!G.exam){s.currentTime=0;s.play().catch(()=>{});}}
-function setBg(img){document.getElementById('app-bg').style.backgroundImage=`url('${img}')`;}
+
+// ===== FULL SCREEN BACKGROUND FUNCTION =====
+function setBg(img){
+  document.getElementById('fullscreen-bg').style.backgroundImage=`url('${img}')`;
+}
 
 const EMOJIS=['🦁','🐯','🐻','🦊','🐼','🐸','🦄','🐲','🦋','🐬','🦅','🐺','🦖','🐙','🦩','🐧','🐮','🐷','🐨','🦒','🦓','🦏','🦛','🐘','🦘','🦙','🐃','🦬','🐉','🦤'];
 const BTNS=['#FF6B6B','#4ECDC4','#45B7D1','#FFA07A'];
@@ -552,6 +592,9 @@ function openBadges(){
 }
 function closeM(id){document.getElementById(id).classList.remove('on');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// Set initial background on load
+setBg(FILES.mainBg);
 </script>
 </body>
 </html>
