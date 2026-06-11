@@ -3,598 +3,1513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Permainan Bijak Sifir</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Bijak Sifir ✨</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --pink:   #FF6B9D;
+    --teal:   #00C9A7;
+    --purple: #A78BFA;
+    --orange: #F97316;
+    --navy:   #1E3A5F;
+    --sky:    #0EA5E9;
+    --red:    #EF4444;
+    --green:  #16A34A;
+    --amber:  #F59E0B;
+    --slate:  #64748B;
+    --violet: #7C3AED;
+    --bg:     #F0F4FF;
+  }
 
-/* ===== FULL SCREEN BACKGROUND ===== */
-#fullscreen-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url('main background.jpg');
-  transition: background-image 0.6s ease;
-}
-#fullscreen-bg::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.38);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  font-family: 'Nunito', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  position: relative;
-}
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+  }
 
-#app {
-  border-radius: 24px;
-  width: 580px;
-  min-height: 580px;
-  box-shadow: 0 25px 60px rgba(0,0,0,.5);
-  overflow: hidden;
-  position: relative;
-  z-index: 10;
-  /* App panel: semi-transparent frosted glass */
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.6);
-}
+  #app {
+    background: white;
+    border-radius: 20px;
+    width: 500px;
+    min-height: 560px;
+    max-height: 560px;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+  }
 
-/* Remove old app-bg since we use fullscreen now */
-#app-bg { display: none !important; }
+  /* ── Scrollbar ── */
+  #app::-webkit-scrollbar { width: 6px; }
+  #app::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+  #app::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
 
-#app-inner { position: relative; z-index: 1; }
-.screen { display:none; animation: fadeUp .25s ease; }
-.screen.active { display:block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.hdr { background:linear-gradient(135deg,#667eea,#764ba2); color:white; text-align:center; padding:14px 16px; font-family:'Fredoka One',cursive; font-size:23px; letter-spacing:1px; }
-.hdr small { font-family:'Nunito',sans-serif; font-size:11px; opacity:.8; display:block; }
-.btn { padding:10px 18px; border:none; border-radius:12px; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
-.btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.2); }
-.btn:active { transform:translateY(0); }
-.btn:disabled { opacity:.5; cursor:default; }
-.btn-purple{background:#7C3AED;color:white} .btn-teal{background:#00C9A7;color:white}
-.btn-pink{background:#FF6B9D;color:white}   .btn-blue{background:#0EA5E9;color:white}
-.btn-grey{background:#E2E8F0;color:#334155} .btn-green{background:#16A34A;color:white}
-.btn-red{background:#EF4444;color:white}    .btn-amber{background:#F59E0B;color:white}
-.btn-full{width:100%;justify-content:center;margin:4px 0}
-.btn-sm{padding:5px 10px;font-size:11px}
-.f-label{font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:4px}
-input[type=text]{width:100%;padding:9px 12px;border:2px solid #E2E8F0;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;outline:none;transition:border .2s}
-input[type=text]:focus{border-color:#7C3AED}
-.sec-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
-.sec-btn{padding:12px 6px;border:3px solid transparent;border-radius:14px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;text-align:center;line-height:1.5;transition:all .2s}
-.sec-btn:hover{transform:scale(1.04);box-shadow:0 4px 14px rgba(0,0,0,.15)}
-.sec-btn.b1{background:#FFE4E1;border-color:#FF6B6B;color:#9B1C1C}
-.sec-btn.b2{background:#E1F5FE;border-color:#4ECDC4;color:#164E63}
-.sec-btn.b3{background:#FFF9C4;border-color:#F59E0B;color:#78350F}
-.game-wrap{display:flex;min-height:520px}
-.game-left{flex:1;padding:8px 12px 12px;min-width:0}
-.game-right{width:148px;min-width:148px;background:#F5F0FF;border-left:2px solid #E0D4FF;display:none;flex-direction:column}
-.game-right.show{display:flex}
-.live-hdr{background:#7C3AED;color:white;font-family:'Fredoka One',cursive;font-size:13px;text-align:center;padding:8px 4px;letter-spacing:.5px}
-.live-body{flex:1;overflow-y:auto;padding:6px 5px}
-.live-row{border-radius:10px;padding:5px 7px;margin-bottom:5px;transition:all .3s}
-.live-row.cur{box-shadow:0 0 0 2px #7C3AED}
-.lr-top{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:800}
-.lr-skor{margin-left:auto;color:#00C9A7;font-weight:800}
-.lr-bot{font-size:10px;font-weight:600;margin-top:2px}
-.status-bar{display:flex;align-items:center;gap:6px;background:#F8F0FF;border-radius:10px;padding:5px 8px;margin:4px 0;font-size:11px;font-weight:700}
-.lv-badge{padding:2px 7px;border-radius:7px;font-size:10px;font-weight:800;margin-left:auto}
-.q-sec{color:#A78BFA;font-weight:800;font-size:11px;margin:3px 0 1px}
-.q-num{color:#F97316;font-size:11px;font-weight:700}
-.q-text{background:#F0F4FF;border-left:4px solid #7C3AED;border-radius:0 12px 12px 0;padding:10px 12px;font-size:13px;font-weight:700;color:#1E3A5F;min-height:52px;line-height:1.5;margin:5px 0}
-.prog-wrap{background:#E5E7EB;border-radius:99px;height:6px;margin:4px 0;overflow:hidden}
-.prog-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,#7C3AED,#EC4899);transition:width .4s}
-.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:5px 0}
-.ans-btn{padding:12px 6px;border:none;border-radius:13px;cursor:pointer;color:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.15);transition:all .15s}
-.ans-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.2)}
-.ans-btn:disabled{cursor:default}
-.ans-btn.correct{background:#16A34A!important;animation:pop .35s ease}
-.ans-btn.wrong{background:#DC2626!important}
-@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-.g-footer{display:flex;align-items:center;gap:6px;padding:5px 0 2px;font-size:11px;font-weight:700}
-.timer{color:#0EA5E9} .timer.warn{color:#EF4444;animation:blink .5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.g-status{flex:1;font-size:10px}
-.g-status.ok{color:#16A34A} .g-status.fail{color:#DC2626}
-.g-skor{color:#00C9A7;margin-left:auto}
-.g-topbar{display:flex;align-items:center;gap:6px;padding:7px 10px;font-size:12px;font-weight:700;border-bottom:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.9)}
-.turn-emoji{font-size:68px;animation:bounce 1s infinite;display:block}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.turn-name{font-family:'Fredoka One',cursive;font-size:25px;color:#1E3A5F;margin:6px 0}
-.mini-scores{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
-.mini-card{padding:4px 9px;border-radius:9px;font-size:11px;font-weight:700;border:2px solid transparent}
-.rank-row{display:flex;align-items:center;padding:7px 10px;gap:8px;font-size:12px;font-weight:700}
-.rk-name{flex:1} .rk-pts{color:#00C9A7}
-.badge-box{background:#F3E8FF;border-radius:12px;padding:10px 12px;margin:7px 0}
-.badge-ttl{color:#7C3AED;font-weight:800;font-size:12px;margin-bottom:5px}
-.badge-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#5B21B6;padding:2px 0;font-weight:600}
-.p-list{max-height:165px;overflow-y:auto;padding:4px 0}
-.p-row{display:flex;align-items:center;gap:8px;padding:3px 8px}
-.p-emoji{font-size:18px;min-width:24px}
-.lb-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;margin:3px 0;background:#F8F8F8;font-size:12px;font-weight:700}
-.lb-name{flex:1} .lb-pts{color:#00C9A7}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
-.modal-bg.on{display:flex}
-.modal-box{background:white;border-radius:20px;padding:22px;max-width:400px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .2s ease}
-.modal-ttl{font-family:'Fredoka One',cursive;font-size:20px;color:#1E3A5F;margin-bottom:10px}
-.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:#1E3A5F;color:white;padding:9px 20px;border-radius:99px;font-weight:700;font-size:13px;z-index:999;transition:transform .3s;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.pad{padding:14px 16px}
-hr{border:none;border-top:1px solid #E5E7EB;margin:10px 0}
-.row{display:flex;gap:8px} .row .btn{flex:1;justify-content:center}
-.mt6{margin-top:6px} .info-box{background:#FFF9E6;border-radius:10px;padding:6px 12px;font-size:11px;color:#F97316;font-weight:700;text-align:center;margin:6px 0}
+  /* ── Screen sections ── */
+  .screen { padding: 18px 20px; }
+
+  /* ── Header ── */
+  .game-title {
+    font-size: 26px;
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(90deg, var(--violet), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+
+  /* ── Tab Buttons ── */
+  .tab-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .tab-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .tab-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+  .tab-btn.solo  { background: #CCE5FF; color: #1E3A5F; }
+  .tab-btn.multi { background: #D4EDDA; color: #1A6B37; }
+
+  /* ── Menu buttons ── */
+  .menu-btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .menu-btn {
+    width: 200px;
+    padding: 9px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .menu-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+
+  /* ── Form inputs ── */
+  label.field-lbl {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate);
+    margin-bottom: 4px;
+  }
+
+  input[type=text], input[type=number] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+    margin-bottom: 10px;
+  }
+  input:focus { border-color: var(--violet); }
+
+  /* ── Section buttons (Bahagian) ── */
+  .section-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .section-btn {
+    padding: 12px 6px;
+    border: none;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .section-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+  .section-btn.b1 { background: #FFB6C1; color: #6B1A2B; }
+  .section-btn.b2 { background: #B6D7FF; color: #1A3B6B; }
+  .section-btn.b3 { background: #FFFACD; color: #5C4A00; }
+
+  /* ── Info box ── */
+  .info-box {
+    background: #FFF9E6;
+    border: 1.5px solid #FCD34D;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #78350F;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  /* ── Checkbox toggle ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .toggle-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+
+  /* ── Back button ── */
+  .back-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #E2E8F0;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #333;
+    font-weight: 600;
+  }
+  .back-btn:hover { background: #CBD5E1; }
+
+  /* ════════════════════════════════ GAME UI ═ */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    background: #FAFAFA;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .top-bar .player-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--pink);
+  }
+
+  .top-bar .icon-btns { display: flex; gap: 6px; }
+  .icon-btn {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 7px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    background: #F8F0FF;
+    font-size: 12px;
+  }
+
+  .lives { color: var(--red); font-size: 14px; }
+  .combo { color: var(--amber); font-weight: 700; }
+  .level-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--purple);
+    padding: 8px 14px 0;
+  }
+
+  .question-counter {
+    text-align: center;
+    font-size: 12px;
+    color: var(--orange);
+    padding: 2px 0;
+  }
+
+  .question-text {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--navy);
+    padding: 10px 20px;
+    min-height: 56px;
+    line-height: 1.4;
+  }
+
+  /* ── Answer buttons ── */
+  .answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 6px 14px 10px;
+  }
+
+  .ans-btn {
+    padding: 14px 8px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    color: white;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s, opacity .2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  }
+  .ans-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 18px rgba(0,0,0,.2); }
+  .ans-btn:disabled { opacity: .75; cursor: default; }
+  .ans-btn.correct { background: #22C55E !important; }
+  .ans-btn.wrong   { background: #EF4444 !important; }
+
+  .ans-btn.c0 { background: linear-gradient(135deg, #FF6B6B, #FF4444); }
+  .ans-btn.c1 { background: linear-gradient(135deg, #4ECDC4, #2EA89E); }
+  .ans-btn.c2 { background: linear-gradient(135deg, #45B7D1, #2196B6); }
+  .ans-btn.c3 { background: linear-gradient(135deg, #FFA07A, #FF7043); }
+
+  /* ── Footer ── */
+  .game-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px 12px;
+  }
+
+  .timer-display {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--sky);
+  }
+  .timer-display.warn { color: var(--red); }
+
+  .status-msg {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+    padding: 0 8px;
+  }
+  .status-msg.ok   { color: var(--green); }
+  .status-msg.fail { color: var(--red); }
+
+  .score-display {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--teal);
+  }
+
+  /* ── Timer bar ── */
+  .timer-bar-wrap {
+    padding: 0 14px 4px;
+  }
+  .timer-bar-bg {
+    height: 5px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .timer-bar-fill {
+    height: 100%;
+    background: var(--sky);
+    border-radius: 4px;
+    transition: width .1s linear, background .3s;
+  }
+  .timer-bar-fill.warn { background: var(--red); }
+
+  /* ════════════════════════════════ MULTIPLAYER ═ */
+  .mp-layout {
+    display: flex;
+    flex: 1;
+  }
+
+  .mp-left { flex: 1; }
+
+  .live-skor-panel {
+    width: 148px;
+    background: #F0F4FF;
+    border-left: 2px solid #E2E8F0;
+    padding: 0 6px 8px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  .live-skor-panel h4 {
+    background: var(--violet);
+    color: white;
+    font-size: 11px;
+    padding: 5px 8px;
+    margin: 0 -6px 8px;
+    text-align: center;
+  }
+
+  .skor-row {
+    border-radius: 8px;
+    padding: 5px 7px;
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+  .skor-row.active { border: 2px solid var(--violet); }
+  .skor-row .player-name { font-weight: 700; color: #111; }
+  .skor-row .player-pts  { color: var(--slate); }
+
+  /* ── Turn screen ── */
+  .turn-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    text-align: center;
+    gap: 10px;
+    min-height: 400px;
+  }
+
+  .turn-emoji { font-size: 72px; }
+  .turn-name  { font-size: 22px; font-weight: 900; color: var(--navy); }
+  .turn-info  { font-size: 13px; color: var(--slate); }
+  .turn-mini-scores {
+    font-size: 11px;
+    color: var(--slate);
+    background: #F8FAFF;
+    border-radius: 8px;
+    padding: 6px 12px;
+    border: 1px solid #E2E8F0;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  .start-turn-btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, var(--violet), var(--pink));
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 6px 20px rgba(118, 75, 162, .35);
+  }
+  .start-turn-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(118,75,162,.4); }
+
+  /* ════════════════════════════════ RESULTS ═ */
+  .result-screen { padding: 16px 20px; }
+
+  .result-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .winner-card {
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .winner-label { font-size: 14px; font-weight: 800; color: var(--violet); }
+  .winner-name  { font-size: 22px; font-weight: 900; color: var(--pink); margin: 4px 0; }
+  .winner-score { font-size: 15px; font-weight: 700; color: var(--teal); }
+
+  .rank-list { margin-bottom: 12px; }
+  .rank-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 13px;
+  }
+  .rank-item .rank-name { font-weight: 700; }
+  .rank-item .rank-pts  { font-size: 12px; color: var(--slate); }
+
+  /* ── Badge summary ── */
+  .badge-box {
+    background: #F3E8FF;
+    border: 1.5px solid #C4B5FD;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+  .badge-box h4 { font-size: 13px; font-weight: 800; color: var(--violet); margin-bottom: 6px; }
+  .badge-item { font-size: 12px; color: #6D28D9; margin-bottom: 3px; }
+
+  /* ── Action buttons row ── */
+  .action-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .action-btn {
+    padding: 9px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(0,0,0,.15); }
+
+  /* ── Game over ── */
+  .gameover-screen {
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .gameover-title { font-size: 30px; font-weight: 900; color: var(--red); margin-bottom: 6px; }
+  .gameover-sub   { font-size: 14px; color: var(--slate); margin-bottom: 12px; }
+
+  /* ── Multiplayer player rows ── */
+  .player-entry-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+  .player-entry-row label { font-size: 13px; width: 90px; flex-shrink: 0; }
+  .player-entry-row input { margin: 0; flex: 1; }
+
+  .counter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .counter-row label { font-size: 13px; color: var(--slate); }
+  .count-val { font-size: 18px; font-weight: 900; color: var(--navy); min-width: 28px; text-align: center; }
+  .count-btn {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 7px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* ── Leaderboard popup ── */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  .modal-box {
+    background: white;
+    border-radius: 16px;
+    width: 460px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .modal-box h3 { font-size: 17px; font-weight: 900; color: var(--navy); margin-bottom: 12px; text-align: center; }
+  .modal-close {
+    display: block;
+    margin: 12px auto 0;
+    padding: 7px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #E2E8F0;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* ── Progress bar ── */
+  .progress-wrap { padding: 0 14px 2px; }
+  .progress-bg {
+    height: 5px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--violet), var(--pink));
+    border-radius: 4px;
+    transition: width .3s ease;
+  }
+
+  /* ── Level popup ── */
+  .level-toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 14px;
+    padding: 18px 28px;
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--violet);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    z-index: 50;
+    text-align: center;
+    animation: popIn .3s ease;
+  }
+  @keyframes popIn {
+    from { transform: translate(-50%,-50%) scale(.8); opacity: 0; }
+    to   { transform: translate(-50%,-50%) scale(1);  opacity: 1; }
+  }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin: 8px 0; }
+
+  /* ── Records table ── */
+  .record-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #F1F5F9;
+    font-size: 12px;
+  }
+  .record-item .rq { font-weight: 600; color: var(--navy); }
+  .record-item .rm { color: var(--slate); }
+  .record-item .rok  { color: var(--green); }
+  .record-item .rfail { color: var(--red); }
+
 </style>
 </head>
 <body>
-
-<!-- FULL SCREEN BACKGROUND -->
-<div id="fullscreen-bg"></div>
-
-<div id="app">
-  <div id="app-bg"></div>
-  <div id="app-inner">
-
-  <div id="s-menu" class="screen active">
-    <div class="hdr">🎮 Permainan Bijak Sifir<small>Matematik Seronok & Mencabar!</small></div>
-    <div class="pad">
-      <div class="row" style="margin:10px 0 6px">
-        <button class="btn btn-blue" onclick="go('s-solo')">👤 Solo</button>
-        <button class="btn btn-green" onclick="go('s-multi')">👥 Multiplayer</button>
-      </div>
-      <div class="info-box">❤️ 3 Nyawa &nbsp;|&nbsp; 🔥 Combo &nbsp;|&nbsp; 📈 Level Auto &nbsp;|&nbsp; 🏆 Badge</div>
-      <hr>
-      <button class="btn btn-purple btn-full" onclick="openLB()">🏆 Leaderboard</button>
-      <button class="btn btn-grey btn-full mt6" onclick="openBadges()">📖 Senarai Badge</button>
-    </div>
-  </div>
-
-  <div id="s-solo" class="screen">
-    <div class="hdr">👤 Mod Solo</div>
-    <div class="pad">
-      <label class="f-label">Nama Pemain:</label>
-      <input type="text" id="solo-name" placeholder="Masukkan nama anda...">
-      <label style="display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12px;font-weight:600;color:#64748B;cursor:pointer">
-        <input type="checkbox" id="exam-solo" style="width:15px;height:15px;accent-color:#7C3AED"> Mode Peperiksaan
-      </label>
-      <hr>
-      <div style="font-weight:800;color:#A78BFA;font-size:13px;margin-bottom:6px">Pilih Bahagian:</div>
-      <div class="sec-btns">
-        <button class="sec-btn b1" onclick="startSolo(1)">📐 Bahagian 1<br><small>Sifir</small></button>
-        <button class="sec-btn b2" onclick="startSolo(2)">📏 Bahagian 2<br><small>Tukar Unit</small></button>
-        <button class="sec-btn b3" onclick="startSolo(3)">🧮 Bahagian 3<br><small>Masalah</small></button>
-      </div>
-      <button class="btn btn-grey btn-full mt6" onclick="go('s-menu')">← Balik</button>
-    </div>
-  </div>
-
-  <div id="s-multi" class="screen">
-    <div class="hdr">👥 Mod Multiplayer</div>
-    <div class="pad">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <span style="font-weight:700;font-size:13px;color:#64748B">Pemain:</span>
-        <span id="mp-count" style="font-family:'Fredoka One',cursive;font-size:22px;color:#7C3AED;min-width:28px">2</span>
-        <button class="btn btn-green btn-sm" onclick="addPlayer()">➕ Tambah</button>
-        <button class="btn btn-red btn-sm" onclick="removePlayer()">➖ Kurang</button>
-        <span style="font-size:11px;color:#94A3B8">(min 2)</span>
-      </div>
-      <div style="background:#F0FFF4;border:2px solid #D1FAE5;border-radius:12px;padding:8px">
-        <div style="font-weight:800;font-size:12px;color:#065F46;margin-bottom:5px">Nama Pemain:</div>
-        <div class="p-list" id="p-list"></div>
-      </div>
-      <label style="display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12px;font-weight:600;color:#64748B;cursor:pointer">
-        <input type="checkbox" id="exam-mp" style="width:15px;height:15px;accent-color:#7C3AED"> Mode Peperiksaan
-      </label>
-      <hr>
-      <div style="font-weight:800;color:#A78BFA;font-size:13px;margin-bottom:6px">Pilih Bahagian:</div>
-      <div class="sec-btns">
-        <button class="sec-btn b1" onclick="startMulti(1)">📐 Bahagian 1<br><small>Sifir</small></button>
-        <button class="sec-btn b2" onclick="startMulti(2)">📏 Bahagian 2<br><small>Tukar Unit</small></button>
-        <button class="sec-btn b3" onclick="startMulti(3)">🧮 Bahagian 3<br><small>Masalah</small></button>
-      </div>
-      <button class="btn btn-grey btn-full mt6" onclick="go('s-menu')">← Balik</button>
-    </div>
-  </div>
-
-  <div id="s-turn" class="screen"><div id="turn-body"></div></div>
-
-  <div id="s-game" class="screen">
-    <div class="g-topbar" id="g-topbar"></div>
-    <div class="game-wrap">
-      <div class="game-left">
-        <div class="prog-wrap"><div class="prog-bar" id="g-prog" style="width:0%"></div></div>
-        <div class="status-bar">
-          <span id="g-nyawa" style="color:#EF4444">❤️❤️❤️</span>
-          <span id="g-combo" style="color:#F59E0B">🔥 —</span>
-          <span class="lv-badge" id="g-lv" style="background:#90EE90">📈 L1</span>
-        </div>
-        <div class="q-sec" id="g-sec">Bahagian 1</div>
-        <div class="q-num" id="g-qnum">Soalan 1/10</div>
-        <div class="q-text" id="g-q">—</div>
-        <div class="ans-grid" id="g-ans"></div>
-        <div class="g-footer">
-          <span class="timer" id="g-timer">⏱ 0.0s</span>
-          <span class="g-status" id="g-msg"></span>
-          <span class="g-skor" id="g-skor">Skor: 0</span>
-        </div>
-      </div>
-      <div class="game-right" id="live-panel">
-        <div class="live-hdr">🏆 Skor Live</div>
-        <div class="live-body" id="live-body"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="s-over" class="screen">
-    <div class="hdr" style="background:linear-gradient(135deg,#DC2626,#F97316)">💔 Game Over!</div>
-    <div class="pad" id="over-body"></div>
-  </div>
-
-  <div id="s-tamat" class="screen">
-    <div class="hdr" style="background:linear-gradient(135deg,#16A34A,#0EA5E9)">🎉 Tamat!</div>
-    <div class="pad" id="tamat-body"></div>
-  </div>
-
-  <div id="s-winner" class="screen">
-    <div class="hdr" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">🏆 Keputusan Akhir!</div>
-    <div class="pad" id="win-body"></div>
-  </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal-bg" id="m-lb">
-  <div class="modal-box">
-    <div class="modal-ttl">🏆 Leaderboard</div>
-    <div id="lb-body"></div>
-    <button class="btn btn-grey btn-full mt6" onclick="closeM('m-lb')">Tutup</button>
-  </div>
-</div>
-
-<div class="modal-bg" id="m-bdg">
-  <div class="modal-box">
-    <div class="modal-ttl">📖 Senarai Badge</div>
-    <div id="bdg-body"></div>
-    <button class="btn btn-grey btn-full mt6" onclick="closeM('m-bdg')">Tutup</button>
-  </div>
-</div>
+<div id="app"></div>
 
 <script>
-const FILES={
-  mainBg:'main background.jpg',
-  bg:{1:'first background.jpg',2:'second background.jpg',3:'Escuela.jpg'},
-  music:'detective-story-224266.mp3',
-  ok:'correct-356013.mp3',
-  wrong:'wrong-47985.mp3'
-};
-const music=new Audio(FILES.music);music.loop=true;music.volume=0.45;
-const sfxOk=new Audio(FILES.ok);
-const sfxWrong=new Audio(FILES.wrong);
-function playMusic(){if(!G.exam){music.currentTime=0;music.play().catch(()=>{});}}
-function stopMusic(){music.pause();music.currentTime=0;}
-function playSfx(s){if(!G.exam){s.currentTime=0;s.play().catch(()=>{});}}
+// ═══════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════
+const EMOJI_POOL = ["🦁","🐯","🐻","🦊","🐼","🐸","🦄","🐲","🦋","🐬","🦅","🐺","🦖","🐙","🦩","🐧"];
+const BTN_COLORS = ["c0","c1","c2","c3"];
 
-// ===== FULL SCREEN BACKGROUND FUNCTION =====
-function setBg(img){
-  document.getElementById('fullscreen-bg').style.backgroundImage=`url('${img}')`;
-}
-
-const EMOJIS=['🦁','🐯','🐻','🦊','🐼','🐸','🦄','🐲','🦋','🐬','🦅','🐺','🦖','🐙','🦩','🐧','🐮','🐷','🐨','🦒','🦓','🦏','🦛','🐘','🦘','🦙','🐃','🦬','🐉','🦤'];
-const BTNS=['#FF6B6B','#4ECDC4','#45B7D1','#FFA07A'];
-const PBG=['#FFE4E1','#E1F5FE','#E8F5E9','#FFF9C4','#F3E8FF','#FFF0F6','#E0F7FA','#FFF8E1','#ECFDF5','#FEF9C3'];
-const PBD=['#FF6B6B','#4ECDC4','#66BB6A','#FFC107','#AB47BC','#F06292','#26C6DA','#FFA726','#10B981','#FBBF24'];
-const QN=10;
-const LV={1:{n:'Mudah',t:30,b:1,bg:'#90EE90'},2:{n:'Sederhana',t:20,b:2,bg:'#FFD700'},3:{n:'Susah',t:12,b:3,bg:'#FF6B6B'}};
-const BADGES={
-  'Sifir Master':{d:'Skor penuh Bahagian 1',i:'🌟'},'Unit Champion':{d:'Skor penuh Bahagian 2',i:'📏'},
-  'Problem Solver':{d:'Skor penuh Bahagian 3',i:'🧠'},'Perfect Score':{d:'Semua soalan betul!',i:'💯'},
-  'Speed Genius':{d:'Purata masa < 5 saat',i:'⚡'},'Combo King':{d:'5 betul berturut-turut',i:'🔥'},
-  'Survivor':{d:'Habis tanpa hilang nyawa',i:'❤️'},'Level Master':{d:'Capai Level 3',i:'🚀'},
-  'Quick Thinker':{d:'Jawab dalam < 3 saat',i:'💨'}
+const BADGE_LIST = {
+  "Sifir Master":  { desc:"Dapat skor penuh di Bahagian 1",       icon:"🌟" },
+  "Unit Champion": { desc:"Dapat skor penuh di Bahagian 2",       icon:"📏" },
+  "Problem Solver":{ desc:"Dapat skor penuh di Bahagian 3",       icon:"🧠" },
+  "Perfect Score": { desc:"Jawab semua soalan betul!",            icon:"💯" },
+  "Speed Genius":  { desc:"Purata masa jawapan < 5 saat",         icon:"⚡" },
+  "Combo King":    { desc:"5 jawapan betul berturut-turut",       icon:"🔥" },
+  "Survivor":      { desc:"Habiskan permainan tanpa hilang nyawa",icon:"❤️" },
+  "Level Master":  { desc:"Capai Level 3",                        icon:"🚀" },
+  "Quick Thinker": { desc:"Jawab soalan dalam masa < 3 saat",     icon:"💨" },
 };
 
-let G={},tid=null;
-function resetG(){G={mode:'solo',bah:1,exam:false,name:'',skor:0,nyawa:3,combo:0,lv:1,ws:0,rekod:[],bdg:[],qi:0,ans:null,t0:0,players:[],cp:0};}
-resetG();
+const LEVEL_CONFIG = {
+  1:{ nama:"Mudah",    masaLimit:30, bonusCombo:1, color:"#90EE90" },
+  2:{ nama:"Sederhana",masaLimit:20, bonusCombo:2, color:"#FFD700" },
+  3:{ nama:"Susah",    masaLimit:12, bonusCombo:3, color:"#FF6B6B" },
+};
 
-let mpE=[];
-function initMP(){mpE=[];document.getElementById('p-list').innerHTML='';_addRow();_addRow();}
-function _addRow(){
-  const i=mpE.length,em=EMOJIS[i%EMOJIS.length];
-  const d=document.createElement('div');d.className='p-row';
-  d.innerHTML=`<span class="p-emoji">${em}</span><input type="text" placeholder="Pemain ${i+1}..." style="margin:0;padding:6px 10px;flex:1">`;
-  document.getElementById('p-list').appendChild(d);
-  mpE.push(d.querySelector('input'));
-  document.getElementById('mp-count').textContent=mpE.length;
-}
-function addPlayer(){_addRow();}
-function removePlayer(){
-  if(mpE.length<=2){showToast('⚠️ Minimum 2 pemain!');return;}
-  mpE.pop();const l=document.getElementById('p-list');l.removeChild(l.lastChild);
-  document.getElementById('mp-count').textContent=mpE.length;
-}
-initMP();
+const PLAYER_BG     = ["#FFE4E1","#E1F5FE","#E8F5E9","#FFF9C4"];
+const PLAYER_BORDER = ["#FF6B6B","#4ECDC4","#66BB6A","#FFC107"];
 
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(['s-menu','s-solo','s-multi','s-over','s-tamat','s-winner'].includes(id))setBg(FILES.mainBg);
-  if(id==='s-menu')stopMusic();
-}
-function emo(n){let s=0;for(let c of n)s+=c.charCodeAt(0);return EMOJIS[s%EMOJIS.length];}
+const LEVEL_UP   = 4;
+const LEVEL_DOWN = 3;
+const SOALAN_MAX = 10;
 
-function startSolo(b){
-  const nm=document.getElementById('solo-name').value.trim();
-  if(!nm){showToast('⚠️ Sila masukkan nama!');return;}
-  resetG();G.mode='solo';G.name=nm;G.bah=b;
-  G.exam=document.getElementById('exam-solo').checked;
-  setBg(FILES.bg[b]);playMusic();
-  document.getElementById('live-panel').classList.remove('show');
-  go('s-game');nextQ();
-}
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let G = {};
 
-function startMulti(b){
-  const names=mpE.map(e=>e.value.trim());
-  if(names.some(n=>!n)){showToast('⚠️ Sila isi semua nama!');return;}
-  if(new Set(names).size!==names.length){showToast('⚠️ Nama mesti berbeza!');return;}
-  resetG();G.mode='multi';G.bah=b;
-  G.exam=document.getElementById('exam-mp').checked;
-  G.players=names.map(n=>({name:n,emoji:emo(n),skor:0,nyawa:3,combo:0,lv:1,ws:0,rekod:[],bdg:[],over:false}));
-  G.cp=0;setBg(FILES.bg[b]);playMusic();showTurn();
+function resetSoloState(bahagian, nama) {
+  G = {
+    mode: "solo",
+    nama, bahagian,
+    skor: 0,
+    soalanKe: 0,
+    nyawa: 3,
+    combo: 0,
+    wrongStreak: 0,
+    level: 1,
+    badges: [],
+    rekod: [],
+    modeExam: G.modeExam || false,
+    currentAnswer: 0,
+    masaMula: 0,
+    timerID: null,
+    // multiplayer
+    pemain: [],
+    pemainIdx: 0,
+  };
 }
 
-function showTurn(){
-  const p=G.players[G.cp],bg=PBG[G.cp%PBG.length],bd=PBD[G.cp%PBD.length];
-  const minis=G.players.map((px,i)=>`<div class="mini-card" style="background:${PBG[i%PBG.length]};border-color:${PBD[i%PBD.length]}">${px.emoji} ${px.name.slice(0,7)}<br><b>${px.skor}</b> ${px.over?'💀':'❤'.repeat(px.nyawa)}</div>`).join('');
-  document.getElementById('turn-body').innerHTML=`<div style="background:${bg};padding:30px 20px;text-align:center;min-height:580px">
-    <span class="turn-emoji">${p.emoji}</span><div class="turn-name">${p.name}</div>
-    <div style="color:#64748B;font-size:12px;margin:4px 0 12px">Skor: <b>${p.skor}</b> | ${'❤️'.repeat(p.nyawa)}${'🖤'.repeat(3-p.nyawa)}</div>
-    <div class="mini-scores">${minis}</div>
-    <button class="btn" style="background:${bd};color:white;font-size:14px;padding:12px 24px;margin-top:14px" onclick="beginTurn()">▶ Mula Giliran ${p.emoji} ${p.name}</button>
+function getEmojiForName(nama) {
+  let s = 0;
+  for (const c of nama) s += c.charCodeAt(0);
+  return EMOJI_POOL[s % EMOJI_POOL.length];
+}
+
+// ═══════════════════════════════════════════════
+// LEADERBOARD (localStorage)
+// ═══════════════════════════════════════════════
+function saveLeaderboard(entries) {
+  const existing = loadLeaderboard();
+  const merged = [...existing, ...entries];
+  merged.sort((a,b) => b.skor - a.skor);
+  localStorage.setItem("bijak_sifir_lb", JSON.stringify(merged.slice(0,50)));
+}
+
+function loadLeaderboard() {
+  try { return JSON.parse(localStorage.getItem("bijak_sifir_lb")) || []; }
+  catch { return []; }
+}
+
+// ═══════════════════════════════════════════════
+// SOALAN GENERATORS
+// ═══════════════════════════════════════════════
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
+
+function getLv() {
+  if (G.mode === "multi") return G.pemain[G.pemainIdx].level;
+  return G.level;
+}
+
+function generateSifir() {
+  const lv = getLv();
+  let a, b;
+  if (lv===1) { a=rand(2,5); b=rand(2,5); }
+  else if (lv===2) { a=rand(2,9); b=rand(2,9); }
+  else { a=rand(6,12); b=rand(6,12); }
+  const jawapan = a * b;
+  const choices = shuffle([jawapan, jawapan+rand(1,5), Math.max(1,jawapan-rand(1,5)), jawapan+rand(6,12)]);
+  return { teks:`${a} × ${b} = ?`, jawapan, choices };
+}
+
+function generateTukarUnit() {
+  const lv = getLv();
+  let pool;
+  if (lv===1) pool=["kg_g","l_ml","jam_min"];
+  else if (lv===2) pool=["kg_g","g_kg","l_ml","ml_l","jam_min","min_jam"];
+  else pool=["kg_g","g_kg","l_ml","ml_l","jam_min","min_jam","hari_jam","minggu_hari"];
+  const jenis = pool[rand(0,pool.length-1)];
+  let teks, jawapan;
+  if (jenis==="kg_g")     { const v=rand(1,20); teks=`${v} kg = ? g`; jawapan=v*1000; }
+  else if (jenis==="g_kg") { const v=[1000,2000,3000,4000,5000,6000,8000,10000][rand(0,7)]; teks=`${v} g = ? kg`; jawapan=v/1000; }
+  else if (jenis==="l_ml") { const v=rand(1,20); teks=`${v} L = ? mL`; jawapan=v*1000; }
+  else if (jenis==="ml_l") { const v=[1000,2000,3000,4000,5000,6000][rand(0,5)]; teks=`${v} mL = ? L`; jawapan=v/1000; }
+  else if (jenis==="jam_min") { const v=rand(1,10); teks=`${v} jam = ? minit`; jawapan=v*60; }
+  else if (jenis==="min_jam") { const v=[60,120,180,240,300][rand(0,4)]; teks=`${v} minit = ? jam`; jawapan=v/60; }
+  else if (jenis==="hari_jam") { const v=rand(1,7); teks=`${v} hari = ? jam`; jawapan=v*24; }
+  else { const v=rand(1,4); teks=`${v} minggu = ? hari`; jawapan=v*7; }
+  let choices=[jawapan];
+  while (choices.length<4) {
+    const d=jawapan<10?rand(1,2):(jawapan<100?[5,10,15][rand(0,2)]:[10,50,100][rand(0,2)]);
+    const p=jawapan+([1,-1][rand(0,1)]*d);
+    if (!choices.includes(p) && p>0) choices.push(p);
+  }
+  return { teks, jawapan, choices:shuffle(choices) };
+}
+
+function generateMasalah() {
+  const lv = getLv();
+  const mudah=[
+    {teks:"Alia ada 2 gulung riben: 32 cm dan 57 cm. Jumlah panjang dalam mm?",jawapan:890,salah:[880,900,89]},
+    {teks:"Kek dipotong 8 bahagian. Aina makan 3/8, adiknya 2/8. Berapa bahagian tinggal?",jawapan:3,salah:[5,2,4]},
+  ];
+  const sederhana=[
+    {teks:"Mat ada kertas 76 meter. Adik potong 34 meter. Panjang tinggal dalam sentimeter?",jawapan:4200,salah:[42,420,4000]},
+    {teks:"Sebiji durian 0.5 kg. Hanafi beli 6 biji. Jumlah berat dalam gram?",jawapan:3000,salah:[3,300,30000]},
+    {teks:"Rauf bermain bola 30 minit sehari. Jumlah masa seminggu dalam jam?",jawapan:3.5,salah:[3,4,210]},
+  ];
+  const susah=[
+    {teks:"Sofia dapat cuti 3 hari, kemudian 4 hari lagi. Jumlah hari dalam minggu?",jawapan:1,salah:[7,2,3]},
+    {teks:"Haziq bawa 2 liter air. Baki 500 mL. Berapa liter diminum?",jawapan:1.5,salah:[1,2,0.5]},
+    {teks:"Bekalan air 6000 L. Guna 250 L sehari. Tahan berapa hari?",jawapan:24,salah:[20,25,30]},
+    {teks:"Buku RM5.90 sebiji. Haidhar beli 5 buah. Baki dari RM50?",jawapan:20.5,salah:[20,21,19.5]},
+  ];
+  const pool = lv===1?mudah:(lv===2?sederhana:susah);
+  const s = pool[rand(0,pool.length-1)];
+  return { teks:s.teks, jawapan:s.jawapan, choices:shuffle([s.jawapan,...s.salah]) };
+}
+
+function janasoalan(bahagian) {
+  if (bahagian===1) return generateSifir();
+  if (bahagian===2) return generateTukarUnit();
+  return generateMasalah();
+}
+
+// ═══════════════════════════════════════════════
+// RENDER HELPERS
+// ═══════════════════════════════════════════════
+const app = document.getElementById("app");
+
+function render(html) { app.innerHTML = html; }
+
+function nyawaTeks(n) {
+  return "❤️".repeat(n) + "🖤".repeat(3-n);
+}
+
+function comboTeks(c) {
+  if (c===0) return "🔥 Combo: —";
+  if (c<3)   return `🔥 Combo: x${c}`;
+  return `🔥🔥 Combo: x${c}!`;
+}
+
+function levelBadgeHTML(lv) {
+  const cfg = LEVEL_CONFIG[lv];
+  return `<span class="level-badge" style="background:${cfg.color}">📈 L${lv}: ${cfg.nama}</span>`;
+}
+
+function badgeSummaryHTML(badges) {
+  if (!badges.length) return `<p style="text-align:center;color:#94A3B8;font-size:12px;">(Tiada badge diperoleh)</p>`;
+  return `<div class="badge-box">
+    <h4>🏆 Badge Diperoleh:</h4>
+    ${badges.map(b => {
+      const info = BADGE_LIST[b]||{};
+      return `<div class="badge-item">${info.icon||"🏅"} <strong>${b}</strong> — ${info.desc||""}</div>`;
+    }).join("")}
   </div>`;
-  go('s-turn');
-}
-function beginTurn(){
-  G.qi=0;go('s-game');
-  document.getElementById('live-panel').classList.add('show');
-  renderLive();nextQ();
 }
 
-function renderLive(){
-  if(G.mode!=='multi')return;
-  const sorted=[...G.players.map((p,i)=>({...p,_i:i}))].sort((a,b)=>b.skor-a.skor);
-  const M=['🥇','🥈','🥉'];
-  document.getElementById('live-body').innerHTML=sorted.map((p,r)=>{
-    const bg=PBG[p._i%PBG.length],bd=PBD[p._i%PBD.length],ic=p._i===G.cp;
-    const nw=p.over?'💀':'❤'.repeat(p.nyawa)+'🖤'.repeat(3-p.nyawa);
-    return `<div class="live-row ${ic?'cur':''}" style="background:${bg};border:2px solid ${ic?bd:'transparent'}">
-      <div class="lr-top"><span>${M[r]||r+1+'.'}</span><span>${p.emoji}</span>
-        <span style="max-width:54px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
-        <span class="lr-skor">${p.skor}</span></div>
-      <div class="lr-bot" style="color:${bd}">${nw} ${p.bdg.map(b=>BADGES[b]?.i||'').join('')}</div>
+function sectionName(b) {
+  return {1:"Sifir",2:"Penukaran Unit",3:"Penyelesaian Masalah"}[b];
+}
+
+// ═══════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════
+
+// ── MENU UTAMA ──
+function showMenu() {
+  clearTimer();
+  G = { modeExam: G.modeExam || false };
+  render(`
+    <div class="screen">
+      <div class="game-title">🎮 Bijak Sifir ✨</div>
+      <p class="subtitle">Kuiz Matematik Interaktif — Sifir, Unit & Masalah</p>
+      <div class="tab-row">
+        <button class="tab-btn solo" onclick="showSolo()">👤 Solo</button>
+        <button class="tab-btn multi" onclick="showMulti()">👥 Multiplayer</button>
+      </div>
+      <hr class="divider">
+      <div class="menu-btn-row">
+        <button class="menu-btn" style="background:#FEF9C3" onclick="showLeaderboard()">🏆 Leaderboard</button>
+        <button class="menu-btn" style="background:#F3E8FF" onclick="showBadgeList()">📖 Senarai Badge</button>
+      </div>
+    </div>
+  `);
+}
+
+// ── SOLO SETUP ──
+function showSolo() {
+  render(`
+    <div class="screen">
+      <div class="game-title" style="font-size:20px">👤 Mod Solo</div>
+      <br>
+      <label class="field-lbl">Nama Pemain:</label>
+      <input type="text" id="inp-nama" placeholder="Masukkan nama anda..." autofocus>
+      <div class="toggle-row">
+        <input type="checkbox" id="chk-exam" ${G.modeExam?"checked":""} onchange="G.modeExam=this.checked">
+        <label for="chk-exam">Mode Peperiksaan (tanpa bunyi & highlight)</label>
+      </div>
+      <div class="info-box">❤️ 3 Nyawa &nbsp;|&nbsp; 🔥 Combo &nbsp;|&nbsp; 📈 Level Auto &nbsp;|&nbsp; 🏆 Badge</div>
+      <label class="field-lbl" style="color:var(--purple);font-size:13px;margin-top:8px;">Pilih Bahagian:</label>
+      <div class="section-grid">
+        <button class="section-btn b1" onclick="mulaSolo(1)">Bahagian 1<br>🔢 Sifir</button>
+        <button class="section-btn b2" onclick="mulaSolo(2)">Bahagian 2<br>📏 Tukar Unit</button>
+        <button class="section-btn b3" onclick="mulaSolo(3)">Bahagian 3<br>🧩 Masalah</button>
+      </div>
+      <button class="back-btn" onclick="showMenu()">← Balik</button>
+    </div>
+  `);
+}
+
+// ── MULTIPLAYER SETUP ──
+let mpNames = ["",""];
+
+function showMulti() {
+  mpNames = ["",""];
+  renderMultiSetup();
+}
+
+function renderMultiSetup() {
+  render(`
+    <div class="screen">
+      <div class="game-title" style="font-size:20px">👥 Mod Multiplayer</div>
+      <br>
+      <div class="counter-row">
+        <label>Bilangan Pemain:</label>
+        <button class="count-btn" style="background:#FFE4E1" onclick="mpKurang()">➖</button>
+        <span class="count-val">${mpNames.length}</span>
+        <button class="count-btn" style="background:#D4EDDA" onclick="mpTambah()">➕</button>
+      </div>
+      <div id="mp-entries">
+        ${mpNames.map((n,i)=>`
+          <div class="player-entry-row">
+            <label>${EMOJI_POOL[i%EMOJI_POOL.length]} Pemain ${i+1}:</label>
+            <input type="text" value="${n}" placeholder="Nama pemain ${i+1}"
+              oninput="mpNames[${i}]=this.value">
+          </div>
+        `).join("")}
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="chk-exam2" ${G.modeExam?"checked":""} onchange="G.modeExam=this.checked">
+        <label for="chk-exam2">Mode Peperiksaan</label>
+      </div>
+      <label class="field-lbl" style="color:var(--purple);margin-top:8px;">Pilih Bahagian:</label>
+      <div class="section-grid">
+        <button class="section-btn b1" onclick="mulaMulti(1)">Bahagian 1<br>🔢 Sifir</button>
+        <button class="section-btn b2" onclick="mulaMulti(2)">Bahagian 2<br>📏 Tukar Unit</button>
+        <button class="section-btn b3" onclick="mulaMulti(3)">Bahagian 3<br>🧩 Masalah</button>
+      </div>
+      <button class="back-btn" onclick="showMenu()">← Balik</button>
+    </div>
+  `);
+}
+
+function mpTambah() {
+  // Save current values from DOM first
+  saveMpNamesFromDOM();
+  mpNames.push("");
+  renderMultiSetup();
+}
+
+function mpKurang() {
+  if (mpNames.length <= 2) return;
+  saveMpNamesFromDOM();
+  mpNames.pop();
+  renderMultiSetup();
+}
+
+function saveMpNamesFromDOM() {
+  document.querySelectorAll("#mp-entries input").forEach((el,i) => {
+    mpNames[i] = el.value;
+  });
+}
+
+// ── BADGE LIST ──
+function showBadgeList() {
+  const items = Object.entries(BADGE_LIST).map(([name,info])=>`
+    <div style="margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:700;">${info.icon} ${name}</div>
+      <div style="font-size:12px;color:#64748B;margin-left:20px;">${info.desc}</div>
+    </div>
+  `).join("");
+
+  showModal(`📖 Senarai Badge`, items);
+}
+
+// ── LEADERBOARD ──
+function showLeaderboard() {
+  const data = loadLeaderboard();
+  if (!data.length) {
+    showModal("🏆 Leaderboard","<p style='text-align:center;color:#94A3B8;padding:20px;'>Tiada rekod lagi.</p>");
+    return;
+  }
+  const medals = ["🥇","🥈","🥉"];
+  const rows = data.slice(0,10).map((e,i) => {
+    const medal = i<3?medals[i]:`${i+1}.`;
+    const badgeIcons = (e.badges||[]).map(b=>BADGE_LIST[b]?.icon||"").join("");
+    return `<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:${i%2===0?"#F8FAFF":"#fff"};margin-bottom:3px;font-size:13px;">
+      <span><strong>${medal}</strong> ${e.nama}</span>
+      <span style="color:var(--teal)">${e.skor}pts (Bhg ${e.bahagian}) ${badgeIcons}</span>
     </div>`;
-  }).join('');
+  }).join("");
+
+  showModal("🏆 Top 10 Leaderboard", rows);
 }
 
-function renderTopBar(){
-  const el=document.getElementById('g-topbar');
-  if(G.mode==='solo'){
-    el.innerHTML=`<span style="color:#FF6B9D;font-weight:800">${emo(G.name)} ${G.name}</span>
-      <div style="margin-left:auto;display:flex;gap:4px">
-        <button class="btn btn-grey btn-sm" onclick="openLB()">🏆</button>
-        <button class="btn btn-grey btn-sm" onclick="go('s-menu')">Menu</button></div>`;
-  }else{
-    const p=G.players[G.cp],bd=PBD[G.cp%PBD.length];
-    el.innerHTML=`<div style="background:${bd};color:white;padding:3px 10px;border-radius:8px;font-weight:800;font-size:12px">${p.emoji} ${p.name}</div>
-      <span style="font-size:10px;color:#64748B">giliran ${G.cp+1}/${G.players.length}</span>
-      <div style="margin-left:auto"><button class="btn btn-grey btn-sm" onclick="go('s-menu')">✕</button></div>`;
+function showModal(title, body) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal-box">
+      <h3>${title}</h3>
+      ${body}
+      <button class="modal-close" onclick="this.closest('.modal-backdrop').remove()">✕ Tutup</button>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+}
+
+// ═══════════════════════════════════════════════
+// SOLO GAME START
+// ═══════════════════════════════════════════════
+function mulaSolo(bahagian) {
+  const nama = document.getElementById("inp-nama")?.value.trim();
+  if (!nama) { alert("Sila masukkan nama terlebih dahulu!"); return; }
+  G = {
+    mode:"solo", nama, bahagian,
+    skor:0, soalanKe:0,
+    nyawa:3, combo:0, wrongStreak:0, level:1,
+    badges:[], rekod:[],
+    modeExam: G.modeExam||false,
+    currentAnswer:0, masaMula:0, timerID:null,
+    pemain:[], pemainIdx:0,
+  };
+  renderGameUI();
+  nextQuestion();
+}
+
+// ═══════════════════════════════════════════════
+// MULTIPLAYER GAME START
+// ═══════════════════════════════════════════════
+function mulaMulti(bahagian) {
+  saveMpNamesFromDOM();
+  const names = mpNames.map(n=>n.trim());
+  if (names.some(n=>n==="")) { alert("Sila isi semua nama pemain!"); return; }
+  const unique = new Set(names);
+  if (unique.size !== names.length) { alert("Nama pemain mestilah berbeza!"); return; }
+
+  G = {
+    mode:"multi", bahagian,
+    soalanKe:0, pemainIdx:0,
+    modeExam: G.modeExam||false,
+    currentAnswer:0, masaMula:0, timerID:null,
+    pemain: names.map((nama,i)=>({
+      nama, emoji:getEmojiForName(nama),
+      skor:0, nyawa:3, combo:0,
+      level:1, wrongStreak:0,
+      rekod:[], badges:[],
+      gameOver:false,
+    })),
+  };
+  showTurnScreen();
+}
+
+// ── TURN INTRO SCREEN ──
+function showTurnScreen() {
+  clearTimer();
+  const p = G.pemain[G.pemainIdx];
+  const idx = G.pemainIdx;
+  const bg = PLAYER_BG[idx%PLAYER_BG.length];
+  const border = PLAYER_BORDER[idx%PLAYER_BORDER.length];
+  const miniScores = G.pemain.map(x=>`${x.emoji}${x.nama.slice(0,4)}: ${x.skor}`).join("  ");
+
+  render(`
+    <div style="background:${bg};min-height:560px;border-radius:20px;">
+      <div class="turn-screen">
+        <div class="turn-emoji">${p.emoji}</div>
+        <div class="turn-name">Giliran: ${p.nama}</div>
+        <div class="turn-info">Skor semasa: ${p.skor} &nbsp;|&nbsp; ${nyawaTeks(p.nyawa)}</div>
+        <div class="turn-mini-scores">${miniScores}</div>
+        <button class="start-turn-btn" onclick="startTurn()">▶ Mula Giliran ${p.emoji} ${p.nama}</button>
+        <button class="back-btn" onclick="showMenu()">✕ Keluar</button>
+      </div>
+    </div>
+  `);
+}
+
+function startTurn() {
+  G.soalanKe = 0;
+  renderGameUI();
+  nextQuestion();
+}
+
+// ═══════════════════════════════════════════════
+// GAME UI RENDER
+// ═══════════════════════════════════════════════
+function renderGameUI() {
+  const isMP = G.mode==="multi";
+  const p     = isMP ? G.pemain[G.pemainIdx] : G;
+  const idx   = isMP ? G.pemainIdx : 0;
+  const bg    = isMP ? PLAYER_BG[idx%PLAYER_BG.length] : "white";
+  const lv    = p.level || G.level || 1;
+  const lvCfg = LEVEL_CONFIG[lv];
+
+  const playerTag = isMP
+    ? `${p.emoji} Giliran: ${p.nama}`
+    : `👤 ${G.nama}`;
+
+  render(`
+    <div>
+      <!-- Top bar -->
+      <div class="top-bar" style="background:${bg}">
+        <span class="player-tag" style="color:${isMP?PLAYER_BORDER[idx%PLAYER_BORDER.length]:"var(--pink)"}">${playerTag}</span>
+        <div class="icon-btns">
+          <button class="icon-btn" style="background:#FFF3CD" onclick="showLeaderboard()">🏆</button>
+          <button class="icon-btn" style="background:#CCE5FF" onclick="showMenu()">Menu</button>
+          <button class="icon-btn" style="background:#FFCCCC" onclick="showMenu()">✕</button>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar" style="background:${bg}">
+        <span class="lives" id="lbl-nyawa">${nyawaTeks(p.nyawa)}</span>
+        <span class="combo" id="lbl-combo">${comboTeks(p.combo)}</span>
+        ${levelBadgeHTML(lv).replace('id="lbl-level"','').replace('<span','<span id="lbl-level"')}
+      </div>
+
+      <!-- MP layout wrapper -->
+      ${isMP ? '<div class="mp-layout">' : ''}
+
+      <div ${isMP?'class="mp-left"':''}>
+        <!-- Progress -->
+        <div class="progress-wrap">
+          <div class="progress-bg"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        </div>
+
+        <!-- Section & counter -->
+        <div class="section-label" id="lbl-bahagian">Bahagian ${G.bahagian}: ${sectionName(G.bahagian)}</div>
+        <div class="question-counter" id="lbl-soalan-ke">Soalan 0/${SOALAN_MAX}</div>
+
+        <!-- Question text -->
+        <div class="question-text" id="lbl-soalan">Memuatkan soalan...</div>
+
+        <!-- Answer grid -->
+        <div class="answer-grid" id="ans-grid">
+          ${[0,1,2,3].map(i=>`
+            <button class="ans-btn ${BTN_COLORS[i]}" id="ans-btn-${i}"
+              onclick="handleAnswer(${i})" disabled>—</button>
+          `).join("")}
+        </div>
+
+        <!-- Timer bar -->
+        <div class="timer-bar-wrap">
+          <div class="timer-bar-bg"><div class="timer-bar-fill" id="timer-bar" style="width:100%"></div></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="game-footer">
+          <div class="timer-display" id="lbl-timer">⏱ 0.0s</div>
+          <div class="status-msg" id="lbl-status"></div>
+          <div class="score-display" id="lbl-skor">Skor: ${p.skor}</div>
+        </div>
+      </div>
+
+      <!-- Live scoreboard (MP only) -->
+      ${isMP ? renderLiveSkor() : ''}
+
+      ${isMP ? '</div>' : ''}
+    </div>
+  `);
+}
+
+function renderLiveSkor() {
+  const sorted = [...G.pemain.map((p,i)=>({p,i}))].sort((a,b)=>b.p.skor-a.p.skor);
+  const rows = sorted.map(({p,i})=>{
+    const isCurrent = i===G.pemainIdx;
+    const nyTxt = p.gameOver ? "💀" : nyawaTeks(p.nyawa);
+    return `<div class="skor-row ${isCurrent?"active":""}" style="background:${PLAYER_BG[i%PLAYER_BG.length]}">
+      <div class="player-name">${["🥇","🥈","🥉","4️⃣"][sorted.findIndex(x=>x.i===i)]}${p.emoji}${p.nama.slice(0,6)}</div>
+      <div class="player-pts">${p.skor}pts ${nyTxt}</div>
+    </div>`;
+  }).join("");
+
+  return `<div class="live-skor-panel">
+    <h4>🏆 Skor Live</h4>
+    ${rows}
+  </div>`;
+}
+
+function updateLiveSkor() {
+  // Re-render the live panel in-place
+  const panel = document.querySelector(".live-skor-panel");
+  if (!panel) return;
+  const sorted = [...G.pemain.map((p,i)=>({p,i}))].sort((a,b)=>b.p.skor-a.p.skor);
+  const rows = sorted.map(({p,i})=>{
+    const isCurrent = i===G.pemainIdx;
+    const nyTxt = p.gameOver?"💀":nyawaTeks(p.nyawa);
+    return `<div class="skor-row ${isCurrent?"active":""}" style="background:${PLAYER_BG[i%PLAYER_BG.length]}">
+      <div class="player-name">${["🥇","🥈","🥉","4️⃣"][sorted.findIndex(x=>x.i===i)]}${p.emoji}${p.nama.slice(0,6)}</div>
+      <div class="player-pts">${p.skor}pts ${nyTxt}</div>
+    </div>`;
+  }).join("");
+  panel.innerHTML = `<h4>🏆 Skor Live</h4>${rows}`;
+}
+
+// ═══════════════════════════════════════════════
+// QUESTION FLOW
+// ═══════════════════════════════════════════════
+function nextQuestion() {
+  clearTimer();
+  G.soalanKe++;
+  if (G.soalanKe > SOALAN_MAX) {
+    if (G.mode==="multi") endTurn();
+    else endGame();
+    return;
   }
-}
 
-function updateUI(){
-  const ny=G.mode==='solo'?G.nyawa:G.players[G.cp].nyawa;
-  const co=G.mode==='solo'?G.combo:G.players[G.cp].combo;
-  const lv=G.mode==='solo'?G.lv:G.players[G.cp].lv;
-  const sk=G.mode==='solo'?G.skor:G.players[G.cp].skor;
-  document.getElementById('g-nyawa').textContent='❤️'.repeat(ny)+'🖤'.repeat(3-ny);
-  document.getElementById('g-combo').textContent=co===0?'🔥 —':co<3?`🔥 x${co}`:`🔥🔥 x${co}!`;
-  const lel=document.getElementById('g-lv');lel.textContent=`📈 L${lv} ${LV[lv].n}`;lel.style.background=LV[lv].bg;
-  document.getElementById('g-skor').textContent=`Skor: ${sk}`;
-}
+  const { teks, jawapan, choices } = janasoalan(G.bahagian);
+  G.currentAnswer = jawapan;
 
-function clv(){return G.mode==='solo'?G.lv:G.players[G.cp].lv;}
-function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function shuf(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+  // Update labels
+  document.getElementById("lbl-bahagian").textContent = `Bahagian ${G.bahagian}: ${sectionName(G.bahagian)}`;
+  document.getElementById("lbl-soalan-ke").textContent = `Soalan ${G.soalanKe}/${SOALAN_MAX}`;
+  document.getElementById("lbl-soalan").textContent = teks;
+  document.getElementById("lbl-status").textContent = "";
+  document.getElementById("lbl-status").className = "status-msg";
 
-function genSifir(){
-  const lv=clv();let a,b;
-  if(lv===1){a=ri(2,5);b=ri(2,5);}else if(lv===2){a=ri(2,9);b=ri(2,9);}else{a=ri(6,12);b=ri(6,12);}
-  const ans=a*b;return{t:`${a} × ${b} = ?`,a:ans,c:shuf([ans,ans+ri(1,5),Math.max(1,ans-ri(1,5)),ans+ri(6,12)])};
-}
-function genUnit(){
-  const lv=clv();
-  const pools={1:['kg_g','l_ml','jam_min'],2:['kg_g','g_kg','l_ml','ml_l','jam_min','min_jam'],3:['kg_g','g_kg','l_ml','ml_l','jam_min','min_jam','hari_jam','minggu_hari']};
-  const j=pools[lv][Math.floor(Math.random()*pools[lv].length)];
-  let t,ans;
-  if(j==='kg_g'){const v=ri(1,20);t=`${v} kg = ? g`;ans=v*1000;}
-  else if(j==='g_kg'){const v=[1000,2000,3000,4000,5000,6000,8000,10000][ri(0,7)];t=`${v} g = ? kg`;ans=v/1000;}
-  else if(j==='l_ml'){const v=ri(1,20);t=`${v} L = ? mL`;ans=v*1000;}
-  else if(j==='ml_l'){const v=[1000,2000,3000,4000,5000,6000][ri(0,5)];t=`${v} mL = ? L`;ans=v/1000;}
-  else if(j==='jam_min'){const v=ri(1,10);t=`${v} jam = ? minit`;ans=v*60;}
-  else if(j==='min_jam'){const v=[60,120,180,240,300][ri(0,4)];t=`${v} minit = ? jam`;ans=v/60;}
-  else if(j==='hari_jam'){const v=ri(1,7);t=`${v} hari = ? jam`;ans=v*24;}
-  else{const v=ri(1,4);t=`${v} minggu = ? hari`;ans=v*7;}
-  const cs=new Set([ans]);
-  while(cs.size<4){const d=ans<10?ri(1,2):ans<100?ri(5,15):ri(10,100);const p2=ans+(Math.random()<.5?d:-d);if(p2>0)cs.add(p2);}
-  return{t,a:ans,c:shuf([...cs])};
-}
-const MP={
-  1:[{t:'Alia ada 2 gulung riben: 32cm dan 57cm. Jumlah dalam mm?',a:890,w:[880,900,89]},{t:'Kek dipotong 8 bahagian. Aina makan 3/8, adik 2/8. Baki?',a:3,w:[5,2,4]}],
-  2:[{t:'Mat ada kertas 76m. Adik potong 34m. Baki dalam cm?',a:4200,w:[42,420,4000]},{t:'Durian 0.5kg sebiji. Hanafi beli 6 biji. Jumlah dalam gram?',a:3000,w:[3,300,30000]},{t:'Rauf main bola 30 minit sehari. Jumlah seminggu dalam jam?',a:3.5,w:[3,4,210]}],
-  3:[{t:'Sofia cuti 3 hari lalu 4 hari lagi. Jumlah dalam minggu?',a:1,w:[7,2,3]},{t:'Haziq bawa 2L air. Baki 500ml. Berapa liter diminum?',a:1.5,w:[1,2,0.5]},{t:'Bekalan 6000L. Guna 250L sehari. Tahan berapa hari?',a:24,w:[20,25,30]},{t:'Buku RM5.90. Haidhar beli 5 buah. Baki dari RM50?',a:20.5,w:[20,21,19.5]}]
-};
-function genMasalah(){const lv=clv(),pool=MP[lv],s=pool[Math.floor(Math.random()*pool.length)];return{t:s.t,a:s.a,c:shuf([s.a,...s.w])};}
-function genQ(){return G.bah===1?genSifir():G.bah===2?genUnit():genMasalah();}
+  const p = G.mode==="multi" ? G.pemain[G.pemainIdx] : G;
+  document.getElementById("lbl-skor").textContent = `Skor: ${p.skor}`;
 
-function nextQ(){
-  G.qi++;if(G.qi>QN){G.mode==='multi'?endTurn():endSolo();return;}
-  renderTopBar();updateUI();if(G.mode==='multi')renderLive();
-  const q=genQ();G.ans=q.a;G.t0=Date.now();
-  const BN={1:'Sifir',2:'Tukar Unit',3:'Masalah Matematik'};
-  document.getElementById('g-sec').textContent=`Bahagian ${G.bah}: ${BN[G.bah]}`;
-  document.getElementById('g-qnum').textContent=`Soalan ${G.qi}/${QN}`;
-  document.getElementById('g-q').textContent=q.t;
-  document.getElementById('g-msg').textContent='';
-  document.getElementById('g-msg').className='g-status';
-  document.getElementById('g-prog').style.width=`${(G.qi-1)/QN*100}%`;
-  const grid=document.getElementById('g-ans');grid.innerHTML='';
-  q.c.forEach((c,i)=>{
-    const b=document.createElement('button');b.className='ans-btn';b.style.background=BTNS[i];b.textContent=c;
-    b.onclick=()=>onAns(c,b);grid.appendChild(b);
+  // Progress bar
+  const pct = ((G.soalanKe-1)/SOALAN_MAX)*100;
+  document.getElementById("progress-fill").style.width = pct+"%";
+
+  // Answer buttons
+  choices.forEach((c,i)=>{
+    const btn = document.getElementById(`ans-btn-${i}`);
+    btn.textContent = c;
+    btn.disabled = false;
+    btn.className = `ans-btn ${BTN_COLORS[i]}`;
   });
-  startTimer();
+
+  // Timer
+  const lv = G.mode==="multi" ? G.pemain[G.pemainIdx].level : G.level;
+  const limit = LEVEL_CONFIG[lv].masaLimit;
+  G.masaMula = Date.now();
+  startTimer(limit);
 }
 
-function startTimer(){
-  clearInterval(tid);const lim=LV[clv()].t;
-  tid=setInterval(()=>{
-    const el=document.getElementById('g-timer');if(!el){clearInterval(tid);return;}
-    const e=(Date.now()-G.t0)/1000;
-    el.textContent=`⏱ ${e.toFixed(1)}s`;el.className=e>=lim-5?'timer warn':'timer';
-    if(e>=lim){clearInterval(tid);onAns(null,null,true);}
-  },100);
+// ── TIMER ──
+function startTimer(limit) {
+  const timerLbl  = document.getElementById("lbl-timer");
+  const timerBar  = document.getElementById("timer-bar");
+
+  function tick() {
+    const elapsed = (Date.now() - G.masaMula) / 1000;
+    const remaining = limit - elapsed;
+    const pct = Math.max(0, (remaining/limit)*100);
+
+    if (timerLbl) {
+      timerLbl.textContent = `⏱ ${elapsed.toFixed(1)}s`;
+      timerLbl.className = "timer-display" + (remaining<=5?" warn":"");
+    }
+    if (timerBar) {
+      timerBar.style.width = pct+"%";
+      timerBar.className = "timer-bar-fill" + (remaining<=5?" warn":"");
+    }
+
+    if (elapsed >= limit) {
+      checkAnswer(null, true);
+      return;
+    }
+    G.timerID = requestAnimationFrame(tick);
+  }
+  G.timerID = requestAnimationFrame(tick);
 }
 
-function onAns(val,btn,tout=false){
-  clearInterval(tid);const e=(Date.now()-G.t0)/1000,ans=G.ans;
-  const ok=!tout&&parseFloat(val)===parseFloat(ans);
-  document.querySelectorAll('.ans-btn').forEach(b=>{
-    b.disabled=true;
-    if(!G.exam)b.classList.add(parseFloat(b.textContent)===parseFloat(ans)?'correct':'wrong');
+function clearTimer() {
+  if (G.timerID) { cancelAnimationFrame(G.timerID); G.timerID = null; }
+}
+
+// ── HANDLE ANSWER ──
+function handleAnswer(idx) {
+  clearTimer();
+  const masaDiambil = (Date.now() - G.masaMula) / 1000;
+  G.masaDiambil = masaDiambil;
+  let val = document.getElementById(`ans-btn-${idx}`).textContent;
+  let parsed = val.includes(".") ? parseFloat(val) : parseInt(val);
+  checkAnswer(parsed, false);
+}
+
+function checkAnswer(userAns, timeout) {
+  const jawapan = G.currentAnswer;
+  const betul   = !timeout && (parseFloat(userAns) === parseFloat(jawapan));
+  const masaDiambil = G.masaDiambil || 0;
+
+  if (G.mode==="multi") checkAnswerMP(userAns, jawapan, betul, masaDiambil, timeout);
+  else                  checkAnswerSolo(userAns, jawapan, betul, masaDiambil, timeout);
+}
+
+// ── SOLO ──
+function checkAnswerSolo(userAns, jawapan, betul, masa, timeout) {
+  const statusEl = document.getElementById("lbl-status");
+
+  if (betul) {
+    G.combo++; G.wrongStreak=0;
+    const bonus = G.combo>=3 ? LEVEL_CONFIG[G.level].bonusCombo : 0;
+    G.skor += 1+bonus;
+    if (G.combo>=5 && !G.badges.includes("Combo King")) G.badges.push("Combo King");
+    if (masa<3.0  && !G.badges.includes("Quick Thinker")) G.badges.push("Quick Thinker");
+
+    let msg = `✔ Betul! +${1+bonus} mata`;
+    if (G.combo>=3) msg += ` | 🔥x${G.combo}`;
+    if (!G.modeExam) { statusEl.textContent=msg; statusEl.className="status-msg ok"; }
+
+    if (G.combo>0 && G.combo%LEVEL_UP===0 && G.level<3) {
+      G.level++;
+      showLevelToast(`⬆️ Level Naik! Level ${G.level}`);
+    }
+  } else {
+    G.combo=0; G.wrongStreak++; G.nyawa--;
+    let msg = timeout ? "⏰ Masa Habis!" : `❌ Salah! (Betul: ${jawapan})`;
+    if (!G.modeExam) { statusEl.textContent=`${msg} | ${nyawaTeks(G.nyawa)}`; statusEl.className="status-msg fail"; }
+    if (!G.modeExam) highlightButtons(jawapan);
+    if (G.wrongStreak>=LEVEL_DOWN && G.level>1) {
+      G.level--; G.wrongStreak=0;
+      showLevelToast(`⬇️ Level Turun ke Level ${G.level}`);
+    }
+  }
+  if (!G.modeExam) highlightButtons(jawapan);
+
+  // Update UI labels
+  const lbl = document.getElementById("lbl-nyawa");
+  const lbc = document.getElementById("lbl-combo");
+  const lbl2 = document.getElementById("lbl-level");
+  const lbls = document.getElementById("lbl-skor");
+  if (lbl) lbl.textContent = nyawaTeks(G.nyawa);
+  if (lbc) lbc.textContent = comboTeks(G.combo);
+  if (lbl2) {
+    const cfg = LEVEL_CONFIG[G.level];
+    lbl2.textContent = `📈 L${G.level}: ${cfg.nama}`;
+    lbl2.style.background = cfg.color;
+  }
+  if (lbls) lbls.textContent = `Skor: ${G.skor}`;
+
+  G.rekod.push({ teks:document.getElementById("lbl-soalan").textContent, userAns, jawapan, masa, betul });
+
+  if (G.nyawa<=0) { setTimeout(gameOver, 1400); return; }
+  setTimeout(nextQuestion, 1400);
+}
+
+// ── MULTIPLAYER ──
+function checkAnswerMP(userAns, jawapan, betul, masa, timeout) {
+  const p = G.pemain[G.pemainIdx];
+  const statusEl = document.getElementById("lbl-status");
+
+  if (betul) {
+    p.combo++; p.wrongStreak=0;
+    const bonus = p.combo>=3 ? LEVEL_CONFIG[p.level].bonusCombo : 0;
+    p.skor += 1+bonus;
+    if (p.combo>=5 && !p.badges.includes("Combo King")) p.badges.push("Combo King");
+    if (masa<3.0  && !p.badges.includes("Quick Thinker")) p.badges.push("Quick Thinker");
+    let msg = `✔ Betul! +${1+bonus} mata`;
+    if (p.combo>=3) msg += ` | 🔥x${p.combo}`;
+    if (!G.modeExam) { statusEl.textContent=msg; statusEl.className="status-msg ok"; }
+    if (p.combo>0 && p.combo%LEVEL_UP===0 && p.level<3) {
+      p.level++;
+      showLevelToast(`⬆️ ${p.emoji} Level Naik! Level ${p.level}`);
+    }
+  } else {
+    p.combo=0; p.wrongStreak++; p.nyawa--;
+    let msg = timeout ? "⏰ Masa Habis!" : `❌ Salah! (Betul: ${jawapan})`;
+    if (!G.modeExam) { statusEl.textContent=`${msg} | ${nyawaTeks(p.nyawa)}`; statusEl.className="status-msg fail"; }
+    if (!G.modeExam) highlightButtons(jawapan);
+    if (p.wrongStreak>=LEVEL_DOWN && p.level>1) {
+      p.level--; p.wrongStreak=0;
+      showLevelToast(`⬇️ ${p.emoji} Level Turun ke Level ${p.level}`);
+    }
+  }
+  if (!G.modeExam) highlightButtons(jawapan);
+
+  const lbl = document.getElementById("lbl-nyawa");
+  const lbc = document.getElementById("lbl-combo");
+  const lbl2 = document.getElementById("lbl-level");
+  const lbls = document.getElementById("lbl-skor");
+  if (lbl) lbl.textContent = nyawaTeks(p.nyawa);
+  if (lbc) lbc.textContent = comboTeks(p.combo);
+  if (lbl2) {
+    const cfg = LEVEL_CONFIG[p.level];
+    lbl2.textContent = `📈 L${p.level}: ${cfg.nama}`;
+    lbl2.style.background = cfg.color;
+  }
+  if (lbls) lbls.textContent = `Skor: ${p.skor}`;
+  updateLiveSkor();
+
+  p.rekod.push({ teks:document.getElementById("lbl-soalan").textContent, userAns, jawapan, masa, betul });
+
+  if (p.nyawa<=0) { p.gameOver=true; setTimeout(endTurn, 1400); return; }
+  setTimeout(nextQuestion, 1400);
+}
+
+// ── Highlight ──
+function highlightButtons(jawapan) {
+  [0,1,2,3].forEach(i=>{
+    const btn = document.getElementById(`ans-btn-${i}`);
+    if (!btn) return;
+    btn.disabled = true;
+    const bv = btn.textContent.includes(".")?parseFloat(btn.textContent):parseInt(btn.textContent);
+    btn.classList.add(bv==jawapan?"correct":"wrong");
   });
-  if(ok)doOk(e);else doFail(ans,tout,e);
 }
 
-function doOk(e){
-  playSfx(sfxOk);let bonus=0;
-  if(G.mode==='solo'){
-    G.combo++;G.ws=0;bonus=G.combo>=3?LV[G.lv].b:0;G.skor+=1+bonus;
-    if(G.combo>=5&&!G.bdg.includes('Combo King'))G.bdg.push('Combo King');
-    if(e<3&&!G.bdg.includes('Quick Thinker'))G.bdg.push('Quick Thinker');
-    if(G.combo%4===0&&G.lv<3){G.lv++;showToast(`⬆️ Level Naik! L${G.lv}`);}
-    G.rekod.push({ok:true,t:e});
-  }else{
-    const p=G.players[G.cp];p.combo++;p.ws=0;bonus=p.combo>=3?LV[p.lv].b:0;p.skor+=1+bonus;
-    if(p.combo>=5&&!p.bdg.includes('Combo King'))p.bdg.push('Combo King');
-    if(e<3&&!p.bdg.includes('Quick Thinker'))p.bdg.push('Quick Thinker');
-    if(p.combo%4===0&&p.lv<3){p.lv++;showToast(`⬆️ ${p.emoji} L${p.lv}`);}
-    p.rekod.push({ok:true,t:e});
+// ── Level toast ──
+function showLevelToast(msg) {
+  const toast = document.createElement("div");
+  toast.className = "level-toast";
+  toast.textContent = msg;
+  app.appendChild(toast);
+  setTimeout(()=>toast.remove(), 1800);
+}
+
+// ═══════════════════════════════════════════════
+// END GAME / END TURN
+// ═══════════════════════════════════════════════
+function awardBadgesSolo() {
+  const { skor, level, nyawa, rekod, bahagian, badges } = G;
+  if (skor===SOALAN_MAX) {
+    if (bahagian===1 && !badges.includes("Sifir Master")) badges.push("Sifir Master");
+    if (bahagian===2 && !badges.includes("Unit Champion")) badges.push("Unit Champion");
+    if (bahagian===3 && !badges.includes("Problem Solver")) badges.push("Problem Solver");
+    if (!badges.includes("Perfect Score")) badges.push("Perfect Score");
   }
-  if(!G.exam){const co=G.mode==='solo'?G.combo:G.players[G.cp].combo;const m=document.getElementById('g-msg');m.textContent=`✔ Betul! +${1+bonus}${co>=3?` 🔥x${co}`:''}`;m.className='g-status ok';}
-  updateUI();if(G.mode==='multi')renderLive();setTimeout(nextQ,1400);
-}
-
-function doFail(ans,tout,e){
-  playSfx(sfxWrong);let ny;
-  if(G.mode==='solo'){
-    G.combo=0;G.ws++;G.nyawa--;ny=G.nyawa;
-    if(G.ws>=3&&G.lv>1){G.lv--;G.ws=0;showToast(`⬇️ Level Turun L${G.lv}`);}
-    G.rekod.push({ok:false,t:e});
-  }else{
-    const p=G.players[G.cp];p.combo=0;p.ws++;p.nyawa--;ny=p.nyawa;
-    if(p.ws>=3&&p.lv>1){p.lv--;p.ws=0;showToast(`⬇️ ${p.emoji} Level Turun`);}
-    p.rekod.push({ok:false,t:e});
+  if (nyawa===3 && !badges.includes("Survivor")) badges.push("Survivor");
+  if (level===3 && !badges.includes("Level Master")) badges.push("Level Master");
+  if (rekod.length) {
+    const avg = rekod.reduce((s,r)=>s+r.masa,0)/rekod.length;
+    if (avg<5.0 && !badges.includes("Speed Genius")) badges.push("Speed Genius");
   }
-  if(!G.exam){const m=document.getElementById('g-msg');m.textContent=(tout?'⏰ Masa Habis!':` ❌ Salah! (Betul: ${ans})`)+` ${'❤️'.repeat(ny)}${'🖤'.repeat(3-ny)}`;m.className='g-status fail';}
-  updateUI();if(G.mode==='multi')renderLive();
-  if(ny<=0){if(G.mode==='multi')G.players[G.cp].over=true;setTimeout(()=>G.mode==='multi'?endTurn():gameOver(),1400);}
-  else setTimeout(nextQ,1400);
 }
 
-function gameOver(){
-  clearInterval(tid);stopMusic();saveLB();
-  document.getElementById('over-body').innerHTML=`<p style="font-size:16px;font-weight:800;color:#FF6B9D">${emo(G.name)} ${G.name}</p><p style="font-size:28px;font-weight:800;color:#00C9A7">Skor: ${G.skor}</p><p style="color:#EF4444;font-size:12px">Nyawa habis!</p>${bdgHtml(G.bdg)}<div class="row mt6"><button class="btn btn-pink" onclick="go('s-menu')">🔄 Cuba Lagi</button><button class="btn btn-purple" onclick="openLB()">🏆 Leaderboard</button></div>`;
-  go('s-over');
+function awardBadgesMP(p) {
+  if (p.skor===SOALAN_MAX) {
+    if (G.bahagian===1 && !p.badges.includes("Sifir Master")) p.badges.push("Sifir Master");
+    if (G.bahagian===2 && !p.badges.includes("Unit Champion")) p.badges.push("Unit Champion");
+    if (G.bahagian===3 && !p.badges.includes("Problem Solver")) p.badges.push("Problem Solver");
+    if (!p.badges.includes("Perfect Score")) p.badges.push("Perfect Score");
+  }
+  if (p.nyawa===3 && !p.badges.includes("Survivor")) p.badges.push("Survivor");
+  if (p.level===3 && !p.badges.includes("Level Master")) p.badges.push("Level Master");
+  if (p.rekod.length) {
+    const avg = p.rekod.reduce((s,r)=>s+r.masa,0)/p.rekod.length;
+    if (avg<5.0 && !p.badges.includes("Speed Genius")) p.badges.push("Speed Genius");
+  }
 }
 
-function endSolo(){
-  clearInterval(tid);stopMusic();awardBdgSolo();saveLB();
-  const avg=G.rekod.length?(G.rekod.reduce((a,r)=>a+r.t,0)/G.rekod.length).toFixed(1):'—';
-  document.getElementById('tamat-body').innerHTML=`<p style="font-size:15px;font-weight:800;color:#FF6B9D">${emo(G.name)} ${G.name}</p><p style="font-size:30px;font-weight:800;color:#00C9A7">${G.skor} / ${QN}</p><p style="font-size:12px;color:#EF4444">Nyawa: ${'❤️'.repeat(G.nyawa)}${'🖤'.repeat(3-G.nyawa)}</p><p style="font-size:12px;color:#0EA5E9">⏱ Purata: ${avg}s</p><p style="font-size:12px;font-weight:800;color:#1E3A5F">📈 Level: ${G.lv} (${LV[G.lv].n})</p>${bdgHtml(G.bdg)}<div class="row mt6"><button class="btn btn-teal" onclick="go('s-menu')">🏠 Menu</button><button class="btn btn-purple" onclick="openLB()">🏆 Leaderboard</button></div>`;
-  go('s-tamat');
+// ── Solo end ──
+function gameOver() {
+  clearTimer();
+  saveLeaderboard([{ nama:G.nama, skor:G.skor, bahagian:G.bahagian, badges:G.badges }]);
+  render(`
+    <div class="gameover-screen">
+      <div class="gameover-title">💔 Game Over!</div>
+      <div class="gameover-sub">${G.nama}, nyawa anda habis!</div>
+      <div style="font-size:18px;font-weight:900;color:var(--teal);margin-bottom:12px;">Skor Akhir: ${G.skor}</div>
+      ${badgeSummaryHTML(G.badges)}
+      <div class="action-row">
+        <button class="action-btn" style="background:#FFB6C1" onclick="showMenu()">🔄 Cuba Lagi</button>
+        <button class="action-btn" style="background:#FEF9C3" onclick="showLeaderboard()">🏆 Leaderboard</button>
+      </div>
+    </div>
+  `);
 }
 
-function awardBdgSolo(){
-  const b=G.bdg;
-  if(G.skor===QN){if(G.bah===1&&!b.includes('Sifir Master'))b.push('Sifir Master');if(G.bah===2&&!b.includes('Unit Champion'))b.push('Unit Champion');if(G.bah===3&&!b.includes('Problem Solver'))b.push('Problem Solver');if(!b.includes('Perfect Score'))b.push('Perfect Score');}
-  if(G.rekod.length){const avg=G.rekod.reduce((a,r)=>a+r.t,0)/G.rekod.length;if(avg<5&&!b.includes('Speed Genius'))b.push('Speed Genius');}
-  if(G.nyawa===3&&!b.includes('Survivor'))b.push('Survivor');
-  if(G.lv===3&&!b.includes('Level Master'))b.push('Level Master');
+function endGame() {
+  clearTimer();
+  awardBadgesSolo();
+  saveLeaderboard([{ nama:G.nama, skor:G.skor, bahagian:G.bahagian, badges:G.badges }]);
+
+  const avg = G.rekod.length ? (G.rekod.reduce((s,r)=>s+r.masa,0)/G.rekod.length).toFixed(1) : "-";
+  const lvCfg = LEVEL_CONFIG[G.level];
+
+  render(`
+    <div class="result-screen">
+      <div class="result-title">🎉 Tamat! 🎉</div>
+      <div class="winner-card" style="background:#F0FFF4;border:2px solid #86EFAC;">
+        <div class="winner-name">👤 ${G.nama}</div>
+        <div class="winner-score">Skor: ${G.skor} / ${SOALAN_MAX}</div>
+        <div style="font-size:12px;color:#64748B;margin-top:4px;">
+          Bahagian ${G.bahagian}: ${sectionName(G.bahagian)} &nbsp;|&nbsp;
+          Nyawa: ${nyawaTeks(G.nyawa)} &nbsp;|&nbsp;
+          ⏱ Purata: ${avg}s &nbsp;|&nbsp;
+          📈 Level ${G.level} (${lvCfg.nama})
+        </div>
+      </div>
+
+      ${badgeSummaryHTML(G.badges)}
+
+      <button class="action-btn" style="background:#E0F2FE;margin-bottom:8px;width:100%"
+        onclick="showRecords()">📋 Lihat Rekod Jawapan</button>
+
+      <div class="action-row">
+        <button class="action-btn" style="background:#DCFCE7" onclick="showMenu()">🏠 Menu Utama</button>
+        <button class="action-btn" style="background:#FEF9C3" onclick="showLeaderboard()">🏆 Leaderboard</button>
+      </div>
+    </div>
+  `);
 }
 
-function endTurn(){
-  clearInterval(tid);const p=G.players[G.cp];
-  if(p.skor===QN&&!p.bdg.includes('Perfect Score'))p.bdg.push('Perfect Score');
-  if(p.nyawa===3&&!p.bdg.includes('Survivor'))p.bdg.push('Survivor');
-  if(p.lv===3&&!p.bdg.includes('Level Master'))p.bdg.push('Level Master');
-  if(p.rekod.length){const avg=p.rekod.reduce((a,r)=>a+r.t,0)/p.rekod.length;if(avg<5&&!p.bdg.includes('Speed Genius'))p.bdg.push('Speed Genius');}
-  if(G.bah===1&&p.skor===QN&&!p.bdg.includes('Sifir Master'))p.bdg.push('Sifir Master');
-  if(G.bah===2&&p.skor===QN&&!p.bdg.includes('Unit Champion'))p.bdg.push('Unit Champion');
-  if(G.bah===3&&p.skor===QN&&!p.bdg.includes('Problem Solver'))p.bdg.push('Problem Solver');
-  G.cp++;if(G.cp>=G.players.length){saveLB();showWinner();}else showTurn();
+function showRecords() {
+  const rows = G.rekod.map((r,i)=>`
+    <div class="record-item">
+      <span class="${r.betul?"rok":"rfail"}">${r.betul?"✔":"❌"}</span>
+      <span class="rq"> ${i+1}. ${r.teks}</span><br>
+      <span class="rm">Jawapan: ${r.userAns} | Betul: ${r.jawapan} | Masa: ${r.masa?.toFixed(1)||"—"}s</span>
+    </div>
+  `).join("");
+  showModal("📋 Rekod Jawapan", rows || "<p>Tiada rekod.</p>");
 }
 
-function showWinner(){
-  stopMusic();
-  const sorted=[...G.players.map((p,i)=>({...p,_i:i}))].sort((a,b)=>b.skor-a.skor);
-  const win=sorted[0],winBd=PBD[win._i%PBD.length],M=['🥇','🥈','🥉'];
-  const rows=sorted.map((p,r)=>{const bg=PBG[p._i%PBG.length],bd=PBD[p._i%PBD.length];return `<div class="rank-row" style="background:${bg}"><span>${M[r]||r+1+'.'}</span><span style="font-size:18px">${p.emoji}</span><span class="rk-name">${p.name}</span><span class="rk-pts">${p.skor}pts</span><span>${'❤️'.repeat(p.nyawa)}${'🖤'.repeat(3-p.nyawa)}</span><span>${p.bdg.map(b=>BADGES[b]?.i||'').join('')}</span></div>`;}).join('');
-  const tie=sorted.length>1&&sorted[0].skor===sorted[1].skor;
-  document.getElementById('win-body').innerHTML=`<div style="background:${winBd}22;border:3px solid ${winBd};border-radius:16px;padding:14px;text-align:center;margin-bottom:10px"><div style="font-size:56px">${win.emoji}</div><div style="font-size:13px;font-weight:800;color:#F59E0B">🥇 PEMENANG!</div><div style="font-family:'Fredoka One',cursive;font-size:22px;color:#1E3A5F">${win.name}</div><div style="color:#00C9A7;font-weight:800">${win.skor} / ${QN} pts</div></div><div style="border-radius:12px;overflow:hidden">${rows}</div>${tie?'<p style="text-align:center;font-weight:800;color:#F59E0B;margin:6px">🤝 Seri!</p>':''}<div class="row mt6"><button class="btn btn-green" onclick="go('s-menu')">🔄 Main Lagi</button><button class="btn btn-purple" onclick="openLB()">🏆 Leaderboard</button></div>`;
-  go('s-winner');
+// ── Multiplayer end turn ──
+function endTurn() {
+  clearTimer();
+  const p = G.pemain[G.pemainIdx];
+  awardBadgesMP(p);
+
+  G.pemainIdx++;
+  if (G.pemainIdx >= G.pemain.length) {
+    saveLeaderboard(G.pemain.map(px=>({ nama:`${px.emoji}${px.nama}`, skor:px.skor, bahagian:G.bahagian, badges:px.badges })));
+    showWinner();
+  } else {
+    showTurnScreen();
+  }
 }
 
-function bdgHtml(bdg){
-  if(!bdg||!bdg.length)return '<p style="font-size:11px;color:#94A3B8;margin:5px 0">(Tiada badge)</p>';
-  return `<div class="badge-box"><div class="badge-ttl">🏆 Badge Diperoleh:</div>${bdg.map(b=>{const i=BADGES[b]||{i:'🏅',d:b};return `<div class="badge-item"><span>${i.i}</span><span><b>${b}</b> — ${i.d}</span></div>`;}).join('')}</div>`;
+// ── Winner screen ──
+function showWinner() {
+  const sorted = [...G.pemain].sort((a,b)=>b.skor-a.skor);
+  const winner = sorted[0];
+  const medals = ["🥇","🥈","🥉","4️⃣"];
+
+  const rankRows = sorted.map((p,i)=>{
+    const origIdx = G.pemain.indexOf(p);
+    const badgeIcons = p.badges.map(b=>BADGE_LIST[b]?.icon||"").join("");
+    return `<div class="rank-item" style="background:${PLAYER_BG[origIdx%PLAYER_BG.length]}">
+      <span class="rank-name">${medals[i]} ${p.emoji} ${p.nama}</span>
+      <span class="rank-pts">${p.skor}pts ${nyawaTeks(p.nyawa)} ${badgeIcons}</span>
+    </div>`;
+  }).join("");
+
+  const tie = sorted.length>1 && sorted[0].skor===sorted[1].skor;
+
+  render(`
+    <div class="result-screen">
+      <div class="result-title">🏆 Keputusan Akhir!</div>
+      <div class="winner-card" style="background:${PLAYER_BORDER[G.pemain.indexOf(winner)%PLAYER_BORDER.length]};color:white;border:none;">
+        <div class="winner-label" style="color:white;">🥇 PEMENANG!</div>
+        <div class="winner-name" style="color:white;">${winner.emoji} ${winner.nama}</div>
+        <div class="winner-score" style="color:rgba(255,255,255,.9);">Skor: ${winner.skor} / ${SOALAN_MAX}</div>
+      </div>
+      ${tie?`<p style="text-align:center;font-weight:700;color:var(--navy);margin-bottom:8px;">🤝 Seri! Tahniah semua!</p>`:""}
+      <div class="rank-list">${rankRows}</div>
+      <div class="action-row">
+        <button class="action-btn" style="background:#DCFCE7" onclick="showMenu()">🔄 Main Lagi</button>
+        <button class="action-btn" style="background:#FEF9C3" onclick="showLeaderboard()">🏆 Leaderboard</button>
+      </div>
+    </div>
+  `);
 }
 
-function saveLB(){
-  let lb=JSON.parse(localStorage.getItem('bijak-lb')||'[]');
-  if(G.mode==='solo')lb.push({n:G.name,s:G.skor,b:G.bah,bdg:G.bdg});
-  else G.players.forEach(p=>lb.push({n:p.emoji+p.name,s:p.skor,b:G.bah,bdg:p.bdg}));
-  lb.sort((a,b2)=>b2.s-a.s);localStorage.setItem('bijak-lb',JSON.stringify(lb.slice(0,50)));
-}
-function openLB(){
-  const lb=JSON.parse(localStorage.getItem('bijak-lb')||'[]'),M=['🥇','🥈','🥉'];
-  document.getElementById('lb-body').innerHTML=lb.length?lb.slice(0,10).map((e,i)=>`<div class="lb-row">${M[i]||i+1+'.'} <span class="lb-name">${e.n}</span><span class="lb-pts">${e.s}pts</span><span style="font-size:10px;color:#94A3B8">Bhg${e.b}</span><span>${(e.bdg||[]).map(b=>BADGES[b]?.i||'').join('')}</span></div>`).join(''):'<p style="text-align:center;color:#94A3B8">Tiada rekod lagi.</p>';
-  document.getElementById('m-lb').classList.add('on');
-}
-function openBadges(){
-  document.getElementById('bdg-body').innerHTML=Object.entries(BADGES).map(([n,i])=>`<div style="margin:7px 0"><div style="font-weight:800;font-size:13px">${i.i} ${n}</div><div style="font-size:11px;color:#64748B">${i.d}</div></div><hr>`).join('');
-  document.getElementById('m-bdg').classList.add('on');
-}
-function closeM(id){document.getElementById(id).classList.remove('on');}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-
-// Set initial background on load
-setBg(FILES.mainBg);
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+G = {};
+showMenu();
 </script>
 </body>
 </html>
